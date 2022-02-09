@@ -33,8 +33,8 @@ object Project1 {
     spark.sql("SELECT SUM(Consumers) AS TotalNumConsumers FROM Bev_ConsCountC WHERE Branch = 'Branch1'").show()
 
     spark.sql("SELECT SUM(Consumers) AS TotalNumConsumers FROM Bev_ConsCountA WHERE Branch = 'Branch2'").show()
-    spark.sql("SELECT SUM(Consumers) AS TotalNumConsumers FROM Bev_ConsCountA WHERE Branch = 'Branch2'").show()
-    spark.sql("SELECT SUM(Consumers) AS TotalNumConsumers FROM Bev_ConsCountA WHERE Branch = 'Branch2'").show()*/
+    spark.sql("SELECT SUM(Consumers) AS TotalNumConsumers FROM Bev_ConsCountB WHERE Branch = 'Branch2'").show()
+    spark.sql("SELECT SUM(Consumers) AS TotalNumConsumers FROM Bev_ConsCountC WHERE Branch = 'Branch2'").show()*/
 
     //Scenario2
 
@@ -45,11 +45,52 @@ object Project1 {
     spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountC where Branch = 'Branch1' " +
       "group by Drink order by sum(Consumers) DESC").show(1)*/
 
-    spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountB where Branch = 'Branch1' " +
+    /*spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA where Branch = 'Branch2' " +
       "group by Drink order by sum(Consumers) ").show(1)
+    spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountB where Branch = 'Branch2' " +
+      "group by Drink order by sum(Consumers) ").show(1)
+    spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountC where Branch = 'Branch2' " +
+      "group by Drink order by sum(Consumers) ").show(1)*/
+
+    //spark.sql("select Drink AS Avg_Drink, ceiling(avg(Consumers)) AS AVG from Bev_ConsCountA where Branch " +
+     // "= 'Branch1' group by Drink order by avg(Consumers)").show()
+
+    //val x = spark.sql("select count(Drink) from Bev_ConsCountA where Branch = 'Branch2'").show()
+    //val y = spark.sql("select sum(Consumers) from Bev_ConsCountA where Branch = 'Branch2'").show()
+    //spark.sql("select Drink From (Select sum(Consumers")
+
+    // Scenario 3
+    /*spark.sql("select Drink from Bev_BranchA where Branch = 'Branch10' or Branch = 'Branch8' or" +
+      " Branch = 'Branch1'").show()
+    spark.sql("select Drink from Bev_BranchB where Branch = 'Branch10' or Branch = 'Branch8' or" +
+      " Branch = 'Branch1'").show()
+    spark.sql("select Drink from Bev_BranchC where Branch = 'Branch10' or Branch = 'Branch8' or" +
+      " Branch = 'Branch1'").show()*/
+
+    /*spark.sql("select Drink from Bev_BranchA where Branch = 'Branch4' or Branch = 'Branch7'").show()
+    spark.sql("select Drink from Bev_BranchB where Branch = 'Branch4' or Branch = 'Branch7'").show()
+    spark.sql("select Drink from Bev_BranchC where Branch = 'Branch4' or Branch = 'Branch7'").show()*/
+
+    // Scenario 4
+    spark.sql("create table if not exists BranchPart(Drink String) partitioned by(Branch String)")
+    spark.sql("set hive.exec.dynamic.partition.mode=nonstrict")
+    spark.sql("insert overwrite table BranchPart partition(Branch) select Drink, Branch from Bev_ConsCountA")
+    spark.sql("select * from BranchPart").show()
+
+    // Scenario 5
+    /*spark.sql("alter table Bev_BranchA set tblproperties('notes' = 'comments will appear here')")
+    spark.sql("show tblproperties Bev_BranchA").show()*/
 
 
 
+
+
+
+
+
+
+
+    
 
    /* println("created spark session")
     println("Welcome, please press a menu option:")
@@ -78,7 +119,10 @@ object Project1 {
       case 3 => println("test 3")
       case 4 => println("test 4")
       case 5 => println("test 5")
-      case 6 => println("test 6")
+      case 6 => println("Special of the day:\n Mild_Latte :) Available at all stores! ")
+      spark.sql("select Drink AS Least_Sold_Drink, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA where Branch = 'Branch2' " +
+      "group by Drink order by sum(Consumers) ").show(1)
+
       case _ => println("Invalided input")
     }
 */
