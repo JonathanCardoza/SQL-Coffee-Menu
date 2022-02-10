@@ -72,14 +72,18 @@ object Project1 {
     spark.sql("select Drink from Bev_BranchC where Branch = 'Branch4' or Branch = 'Branch7'").show()*/
 
     // Scenario 4
+    /*spark.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
     spark.sql("create table if not exists BranchPart(Drink String) partitioned by(Branch String)")
-    spark.sql("set hive.exec.dynamic.partition.mode=nonstrict")
     spark.sql("insert overwrite table BranchPart partition(Branch) select Drink, Branch from Bev_ConsCountA")
-    spark.sql("select * from BranchPart").show()
+    spark.sql("select * from BranchPart").show()*/
 
     // Scenario 5
     /*spark.sql("alter table Bev_BranchA set tblproperties('notes' = 'comments will appear here')")
     spark.sql("show tblproperties Bev_BranchA").show()*/
+
+    //spark.sql("SELECT * FROM Bev_CountR").show()
+
+
 
 
 
@@ -120,7 +124,7 @@ object Project1 {
       case 4 => println("test 4")
       case 5 => println("test 5")
       case 6 => println("Special of the day:\n Mild_Latte :) Available at all stores! ")
-      spark.sql("select Drink AS Least_Sold_Drink, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA where Branch = 'Branch2' " +
+      spark.sql("select Drink AS Least_Sold_Drink, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA " +
       "group by Drink order by sum(Consumers) ").show(1)
 
       case _ => println("Invalided input")
