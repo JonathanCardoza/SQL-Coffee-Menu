@@ -1,4 +1,6 @@
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.col
+
 import scala.io.StdIn.readLine
 
 object Project1 {
@@ -72,10 +74,19 @@ object Project1 {
     spark.sql("select Drink from Bev_BranchC where Branch = 'Branch4' or Branch = 'Branch7'").show()*/
 
     // Scenario 4
+    //spark.sql("drop table if exists BranchPart")
     /*spark.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
-    spark.sql("create table if not exists BranchPart(Drink String) partitioned by(Branch String)")
-    spark.sql("insert overwrite table BranchPart partition(Branch) select Drink, Branch from Bev_ConsCountA")
+    spark.sql("create table if not exists BranchPart(Branch String) partitioned by(Drink String)")
+    spark.sql("insert overwrite table BranchPart partition(Drink) select Branch, Drink from Bev_BranchA")
     spark.sql("select * from BranchPart").show()*/
+
+    //some alternate partition code testing
+    /*val df = spark.sql("SELECT Drink, Branch FROM Bev_ConsCountA")
+    val df2 = df.repartition(9, col("Branch"))
+    df2.show()
+    println(df2.rdd.getNumPartitions)*/
+
+
 
     // Scenario 5
     /*spark.sql("alter table Bev_BranchA set tblproperties('notes' = 'comments will appear here')")
@@ -96,7 +107,7 @@ object Project1 {
 
     
 
-   /* println("created spark session")
+   println("created spark session")
     println("Welcome, please press a menu option:")
     println("Press:\n 1. For scenario 1\n 2. For scenario 2\n 3. For scenario 3\n 4. For scenario 4" +
       "\n 5. For scenario 5\n 6. For scenario 6")
@@ -119,17 +130,59 @@ object Project1 {
 
         case _ => println("Not a valid input ")
       }
-      case 2 => println("test 2")
-      case 3 => println("test 3")
-      case 4 => println("test 4")
+      case 2 => val res = readLine("Press 1:" +
+        " What is the most consumed beverage on Branch1\n" +
+        "Press 2: What is the least consumed beverage on Branch2\n" +
+        "Press 3: What is the Average consumed beverage of Branch2 ").toInt
+      res match {
+        case 1 => spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA where Branch = 'Branch1' " +
+          "group by Drink order by sum(Consumers) DESC").show(1)
+          spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountB where Branch = 'Branch1' " +
+            "group by Drink order by sum(Consumers) DESC").show(1)
+          spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountC where Branch = 'Branch1' " +
+            "group by Drink order by sum(Consumers) DESC").show(1)
+
+        case 2 => spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA where Branch = 'Branch2' " +
+          "group by Drink order by sum(Consumers) ").show(1)
+          spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountB where Branch = 'Branch2' " +
+            "group by Drink order by sum(Consumers) ").show(1)
+          spark.sql("select Drink AS Most_Cons_Bev, sum(Consumers) AS SumDrinkBev from Bev_ConsCountC where Branch = 'Branch2' " +
+            "group by Drink order by sum(Consumers) ").show(1)
+
+        case 3 => //this needs to be worked on
+
+        case _ => println("Not a valid input!")
+      }
+      case 3 =>  val res = readLine("Press 1: " +
+        "What are the beverages available on Branch10, Branch8, and Branch1?\n" +
+        "Press 2: What are the comman beverages available in Branch4,Branch7?").toInt
+      res match {
+        case 1 => spark.sql("select Drink from Bev_BranchA where Branch = 'Branch10' or Branch = 'Branch8' or" +
+          " Branch = 'Branch1'").show()
+          spark.sql("select Drink from Bev_BranchB where Branch = 'Branch10' or Branch = 'Branch8' or" +
+            " Branch = 'Branch1'").show()
+          spark.sql("select Drink from Bev_BranchC where Branch = 'Branch10' or Branch = 'Branch8' or" +
+            " Branch = 'Branch1'").show()
+
+        case 2 => spark.sql("select Drink from Bev_BranchA where Branch = 'Branch4' or Branch = 'Branch7'").show()
+          spark.sql("select Drink from Bev_BranchB where Branch = 'Branch4' or Branch = 'Branch7'").show()
+          spark.sql("select Drink from Bev_BranchC where Branch = 'Branch4' or Branch = 'Branch7'").show()
+
+        case _ =>
+      }
+      case 4 => val df = spark.sql("SELECT Drink, Branch FROM Bev_ConsCountA")
+        val df2 = df.repartition(9, col("Branch"))
+        df2.show()
+        println("The numbers of partitions are: ")
+        println(df2.rdd.getNumPartitions)
       case 5 => println("test 5")
-      case 6 => println("Special of the day:\n Mild_Latte :) Available at all stores! ")
+      case 6 => println("Special of the day:\n Med_Coffee :) Available at all stores! ")
       spark.sql("select Drink AS Least_Sold_Drink, sum(Consumers) AS SumDrinkBev from Bev_ConsCountA " +
-      "group by Drink order by sum(Consumers) ").show(1)
+      "group by Drink order by sum(Consumers) ").show()
 
       case _ => println("Invalided input")
     }
-*/
+
   }
 
 }
