@@ -17,4 +17,13 @@ to-do list:
 Develop a better menu, implement the use of custom queries that users can make, and add a login system
 
 # Getting started 
-git clone 
+git clone https://github.com/RevJonathan/Project1.git
+
+Make sure you have git and IntelliJ
+
+# Usage
+This project is a simple program that uses SparkSQL to see any trends in each branch (store) 
+
+# Contributors
+
+Jonathan Cardoza
