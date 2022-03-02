@@ -9,5 +9,12 @@ Spark and SparkSQL,
 sbt 1.6.2,
 Scala 2.11.12
 
-#Features
-Queries to see most consumed beverages, least consumed beverages, special drink of the day
+# Features
+Queries to see most consumed beverages, least consumed beverages, special drink of the day,
+Excellent menu
+
+to-do list:
+Develop a better menu, implement the use of custom queries that users can make, and add a login system
+
+# Getting started 
+git clone 
